@@ -1,5 +1,20 @@
 export type CompanyType = {
-  link: string;
-  name: string;
-  description: string;
-}
+  fi_id: string;
+  fi_nazev: string;
+  fi_web: string;
+  fi_web2: string;
+  fi_logo: string;
+  fi_doc: string;
+  fi_doc2: string;
+  fi_youtube: string;
+  fi_video: string;
+  fi_video2: string;
+  fi_youtube2: string;
+  fi_volnamista: string;
+  fi_kontakt: string;
+  fi_uplatneni: string;
+  fi_popis: string;
+  fi_alias: string;
+  fi_scene_id: string;
+  fi_place: string;
+};

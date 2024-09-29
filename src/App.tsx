@@ -11,19 +11,24 @@ import { TabButton } from './components/TabButton';
 import './App.css';
 
 import closeBtnImg from './assets/closeBtnImg.svg';
-import companies from './data/mapa_seats.json';
 import { CompanyType } from './lib/appTypes';
+import { useFetchCompanies } from './lib/useFetchCompanies';
 
 function App() {
   const svgRef = useRef<SVGSVGElement>(null);
 
+  const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
+  const { data: companies, isLoading, err } = useFetchCompanies();
+
   const handleTableClick = (e: MouseEvent) => {
     const targetElement = e.target as HTMLElement;
     const parentElementId = targetElement.parentElement?.id;
-  
+
     if (parentElementId) {
-      const foundCompany = companies.find((company) => parentElementId === company.table);
-      setSelectedCompany(foundCompany ?? null);
+      if (companies) {
+        const foundCompany = companies.find((company) => parentElementId === company.fi_place);
+        setSelectedCompany(foundCompany ?? null);
+      }
       return;
     }
 
@@ -51,15 +56,12 @@ function App() {
     },
   ];
 
-  const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
   const [selectedMapOption, setSelectedMapOption] = useState(mapOptions[0]);
 
   const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
-    setIsMobile(
-      window.matchMedia('only screen and (max-width: 768px)').matches
-    );
+    setIsMobile(window.matchMedia('only screen and (max-width: 768px)').matches);
   }, [isMobile]);
 
   useEffect(() => {
@@ -68,19 +70,18 @@ function App() {
         const svgElements = svgRef.current.querySelectorAll('g[id^="K"], g[id^="R"]');
         svgElements.forEach((element) => {
           const svgElement = element as SVGElement;
-          const tableId = svgElement.getAttribute('id');
-          console.log({ tableId });
-          
           svgElement.addEventListener('click', handleTableClick);
         });
       }
     }, 100);
-  
+
     return () => clearTimeout(timer);
   }, [selectedMapOption]);
 
   return (
-    <div className="App relative">
+    <div>
+      {isLoading && <div>loading ...</div>}
+      {err && <div>{err}</div>}
       <header
         role="tablist"
         className="flex justify-center relative shadow-md md:overflow-hidden bg-bdOrange mb-4 md:mb-12 w-full"
@@ -107,17 +108,13 @@ function App() {
             </button>
           </div>
           <div className="company-detail-content flex flex-col text-lg items-center justify-center text-center text-white">
-            {selectedCompany.link && selectedCompany.name && (
-              <a
-                className="company-link"
-                target="_blank"
-                href={selectedCompany.link}
-              >
-                <h2 className="company-name">{selectedCompany.name}</h2>
+            {selectedCompany.fi_web && selectedCompany.fi_nazev && (
+              <a className="company-link" target="_blank" href={selectedCompany.fi_web}>
+                <h2 className="company-name">{selectedCompany.fi_nazev}</h2>
               </a>
             )}
-            {!selectedCompany.link && selectedCompany.name && (
-              <h2 className="company-name">{selectedCompany.name}</h2>
+            {!selectedCompany.fi_web && selectedCompany.fi_nazev && (
+              <h2 className="company-name">{selectedCompany.fi_nazev}</h2>
             )}
           </div>
         </div>
@@ -129,10 +126,7 @@ function App() {
         desktopMap={selectedMapOption.desktopMap}
       />
 
-      <a
-        href="https://businessday.utb.cz/"
-        className="fixed bottom-10 bg-bdOrange text-white px-4 py-2 z-10"
-      >
+      <a href="https://businessday.utb.cz/" className="fixed bottom-10 bg-bdOrange text-white px-4 py-2 z-10">
         Zpátky na Business day
       </a>
     </div>
