@@ -20,12 +20,11 @@ export const useFetchCompanies = () => {
         }
 
         const data = await response.json();
+        console.log(data);
         setData(data);
         setErr(null);
       } catch (err) {
-        if (abortController.signal.aborted) {
-          console.error('Fetch aborted');
-        } else if (err instanceof Error) {
+        if (err instanceof Error) {
           setErr(err.message);
         } else {
           setErr('Unexpected error');
