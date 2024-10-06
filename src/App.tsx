@@ -16,6 +16,7 @@ import { useFetchCompanies } from './lib/useFetchCompanies';
 
 function App() {
   const svgRef = useRef<SVGSVGElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null); // Reference for the modal
 
   const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
   const { data: companies, isLoading, err } = useFetchCompanies();
@@ -34,6 +35,25 @@ function App() {
 
     setSelectedCompany(null);
   };
+
+  // Handle closing the modal when clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        setSelectedCompany(null); // Close the modal if clicking outside
+      }
+    };
+
+    if (selectedCompany) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside); // Cleanup listener on unmount
+    };
+  }, [selectedCompany]);
 
   const mapOptions = [
     {
@@ -57,7 +77,6 @@ function App() {
   ];
 
   const [selectedMapOption, setSelectedMapOption] = useState(mapOptions[0]);
-
   const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
@@ -79,9 +98,7 @@ function App() {
   }, [selectedMapOption]);
 
   return (
-    <div>
-      {isLoading && <div>loading ...</div>}
-      {err && <div>{err}</div>}
+    <div className="App relative">
       <header
         role="tablist"
         className="flex justify-center relative shadow-md md:overflow-hidden bg-bdOrange mb-4 md:mb-12 w-full"
@@ -101,20 +118,29 @@ function App() {
       </header>
 
       {selectedCompany && (
-        <div className="company-detail fixed z-10 bg-bdOrange w-80 h-40 p-4 top-1/4 rounded-lg">
+        <div
+          ref={modalRef} // Attach the ref to the modal
+          className="company-detail fixed z-10 bg-bdOrange w-80 h-40 p-4 top-1/4 rounded-lg"
+        >
           <div className="flex justify-end mb-2">
             <button onClick={() => setSelectedCompany(null)}>
               <img src={closeBtnImg} alt="close" />
             </button>
           </div>
           <div className="company-detail-content flex flex-col text-lg items-center justify-center text-center text-white">
-            {selectedCompany.fi_web && selectedCompany.fi_nazev && (
-              <a className="company-link" target="_blank" href={selectedCompany.fi_web}>
+            {selectedCompany.fi_nazev && (
+              <div>
                 <h2 className="company-name">{selectedCompany.fi_nazev}</h2>
-              </a>
-            )}
-            {!selectedCompany.fi_web && selectedCompany.fi_nazev && (
-              <h2 className="company-name">{selectedCompany.fi_nazev}</h2>
+                {selectedCompany.fi_web && (
+                  <a
+                    className="company-link"
+                    target="_blank"
+                    href={selectedCompany.fi_web}
+                  >
+                    {<p><u>Přejít na web</u></p>}
+                  </a>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -126,7 +152,10 @@ function App() {
         desktopMap={selectedMapOption.desktopMap}
       />
 
-      <a href="https://businessday.utb.cz/" className="fixed bottom-10 bg-bdOrange text-white px-4 py-2 z-10">
+      <a
+        href="https://businessday.utb.cz/"
+        className="fixed bottom-10 bg-bdOrange text-white px-4 py-2 z-10"
+      >
         Zpátky na Business day
       </a>
     </div>
