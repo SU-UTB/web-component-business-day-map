@@ -19,7 +19,7 @@ function App() {
   const modalRef = useRef<HTMLDivElement>(null); // Reference for the modal
 
   const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
-  const { data: companies, isLoading, err } = useFetchCompanies();
+  const { data: companies, /*isLoading, err*/ } = useFetchCompanies();
 
   const handleTableClick = (e: MouseEvent) => {
     const targetElement = e.target as HTMLElement;
@@ -120,7 +120,7 @@ function App() {
       {selectedCompany && (
         <div
           ref={modalRef} // Attach the ref to the modal
-          className="company-detail fixed z-10 bg-bdOrange w-80 h-40 p-4 top-1/4 rounded-lg"
+          className="company-detail fixed z-10 bg-bdOrange w-80 max-h-[80vh] p-4 top-1/3 rounded-lg overflow-y-auto"
         >
           <div className="flex justify-end mb-2">
             <button onClick={() => setSelectedCompany(null)}>
@@ -130,14 +130,37 @@ function App() {
           <div className="company-detail-content flex flex-col text-lg items-center justify-center text-center text-white">
             {selectedCompany.fi_nazev && (
               <div>
+
+                {selectedCompany.fi_logo && (
+                  <div className="flex justify-center mb-4 w-full">
+                    <img
+                      src={`https://businessdays.utb.cz/wp-content/uploads/logo2022/${selectedCompany.fi_logo}`}
+                      alt={`${selectedCompany.fi_nazev} logo`}
+                      className="max-h-[65px] max-w-[100px] w-auto object-contain"
+                    />
+                  </div>                                                                         
+                )}
+
                 <h2 className="company-name">{selectedCompany.fi_nazev}</h2>
+                <br/>
+
+                {selectedCompany.fi_id && (
+                  <a
+                    className="company-link"
+                    target="_blank"
+                    href={`https://businessdays.utb.cz/firma-detail/?id=${selectedCompany.fi_id}`}
+                  >
+                    <p><u>Detail</u></p>
+                  </a>
+                )}
+                
                 {selectedCompany.fi_web && (
                   <a
                     className="company-link"
                     target="_blank"
                     href={selectedCompany.fi_web}
                   >
-                    {<p><u>Přejít na web</u></p>}
+                    <p><u>Přejít na web</u></p>
                   </a>
                 )}
               </div>
