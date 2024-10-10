@@ -137,16 +137,16 @@ function App() {
                       alt={`${selectedCompany.fi_nazev ?? 'Company'} logo`}
                       className="max-h-[65px] max-w-[100px] w-auto object-contain"
                       onError={(e) => {
-                        e.currentTarget.src = 'fallback-image.png'; // Fallback image if the logo fails to load
-                        e.currentTarget.alt = 'Logo not available';
+                        /*e.currentTarget.src = 'fallback-image.png';*/ // Fallback image if the logo fails to load
+                        e.currentTarget.alt = 'Logo nenačteno';
                       }}
                     />
                   </div>
                 ) : (
-                  <p>Logo not loaded</p>
+                  <p className='error-text'>Logo nenačteno</p>
                 )}
 
-                <h2 className="company-name">{selectedCompany.fi_nazev ?? 'Name Not Available'}</h2>
+                <h2 className="company-name">{selectedCompany.fi_nazev ?? 'Název firmy nenačten'}</h2>
                 <br />
 
                 {selectedCompany.fi_id ? (
@@ -155,10 +155,10 @@ function App() {
                     target="_blank"
                     href={`https://businessdays.utb.cz/firma-detail/?id=${selectedCompany.fi_id}`}
                   >
-                    <p><u>Detail</u></p>
+                    <p className="underline">Detail</p>
                   </a>
                 ) : (
-                  <p>Details not available</p>
+                  <p className='error-text'>Detail není dostupný</p>
                 )}
 
                 {selectedCompany.fi_web ? (
@@ -167,14 +167,14 @@ function App() {
                     target="_blank"
                     href={selectedCompany.fi_web}
                   >
-                    <p><u>Přejít na web</u></p>
+                    <p className="underline">Přejít na web</p>
                   </a>
                 ) : (
-                  <p>Website not available</p>
+                  <p className='error-text'>Web není dostupný</p>
                 )}
               </div>
             ) : (
-              <p>Information could not be loaded. Please try again later.</p>
+              <p>Chyba načítání. Zkuste to později.</p>
             )}
           </div>
 

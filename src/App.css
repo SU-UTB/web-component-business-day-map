@@ -43,6 +43,6 @@ g:hover > .table {
   width: 400px;
 }
 
-.company-link {
+.company-link, .error-text {
   font-size: medium;
 }
