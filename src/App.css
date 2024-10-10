@@ -42,3 +42,7 @@ g:hover > .table {
   background-color: bisque;
   width: 400px;
 }
+
+.company-link, .error-text {
+  font-size: medium;
+}

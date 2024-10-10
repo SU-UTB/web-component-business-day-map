@@ -16,9 +16,10 @@ import { useFetchCompanies } from './lib/useFetchCompanies';
 
 function App() {
   const svgRef = useRef<SVGSVGElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null); // Reference for the modal
 
   const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
-  const { data: companies, isLoading, err } = useFetchCompanies();
+  const { data: companies, /*isLoading, err*/ } = useFetchCompanies();
 
   const handleTableClick = (e: MouseEvent) => {
     const targetElement = e.target as HTMLElement;
@@ -34,6 +35,25 @@ function App() {
 
     setSelectedCompany(null);
   };
+
+  // Handle closing the modal when clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        setSelectedCompany(null); // Close the modal if clicking outside
+      }
+    };
+
+    if (selectedCompany) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside); // Cleanup listener on unmount
+    };
+  }, [selectedCompany]);
 
   const mapOptions = [
     {
@@ -57,7 +77,6 @@ function App() {
   ];
 
   const [selectedMapOption, setSelectedMapOption] = useState(mapOptions[0]);
-
   const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
@@ -79,9 +98,7 @@ function App() {
   }, [selectedMapOption]);
 
   return (
-    <div>
-      {isLoading && <div>loading ...</div>}
-      {err && <div>{err}</div>}
+    <div className="App relative">
       <header
         role="tablist"
         className="flex justify-center relative shadow-md md:overflow-hidden bg-bdOrange mb-4 md:mb-12 w-full"
@@ -101,22 +118,66 @@ function App() {
       </header>
 
       {selectedCompany && (
-        <div className="company-detail fixed z-10 bg-bdOrange w-80 h-40 p-4 top-1/4 rounded-lg">
+        <div
+          ref={modalRef} // Attach the ref to the modal
+          className="company-detail fixed z-10 bg-bdOrange w-80 max-h-[80vh] p-4 top-1/3 rounded-lg overflow-y-auto"
+        >
           <div className="flex justify-end mb-2">
             <button onClick={() => setSelectedCompany(null)}>
               <img src={closeBtnImg} alt="close" />
             </button>
           </div>
           <div className="company-detail-content flex flex-col text-lg items-center justify-center text-center text-white">
-            {selectedCompany.fi_web && selectedCompany.fi_nazev && (
-              <a className="company-link" target="_blank" href={selectedCompany.fi_web}>
-                <h2 className="company-name">{selectedCompany.fi_nazev}</h2>
-              </a>
-            )}
-            {!selectedCompany.fi_web && selectedCompany.fi_nazev && (
-              <h2 className="company-name">{selectedCompany.fi_nazev}</h2>
+            {selectedCompany ? (
+              <div>
+                {selectedCompany.fi_logo ? (
+                  <div className="flex justify-center mb-4 w-full">
+                    <img
+                      src={`https://businessdays.utb.cz/wp-content/uploads/logo2022/${selectedCompany.fi_logo}`}
+                      alt={`${selectedCompany.fi_nazev ?? 'Company'} logo`}
+                      className="max-h-[65px] max-w-[100px] w-auto object-contain"
+                      onError={(e) => {
+                        /*e.currentTarget.src = 'fallback-image.png';*/ // Fallback image if the logo fails to load
+                        e.currentTarget.alt = 'Logo nenačteno';
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <p className='error-text'>Logo nenačteno</p>
+                )}
+
+                <h2 className="company-name">{selectedCompany.fi_nazev ?? 'Název firmy nenačten'}</h2>
+                <br />
+
+                {selectedCompany.fi_id ? (
+                  <a
+                    className="company-link"
+                    target="_blank"
+                    href={`https://businessdays.utb.cz/firma-detail/?id=${selectedCompany.fi_id}`}
+                  >
+                    <p className="underline">Detail</p>
+                  </a>
+                ) : (
+                  <p className='error-text'>Detail není dostupný</p>
+                )}
+
+                {selectedCompany.fi_web ? (
+                  <a
+                    className="company-link"
+                    target="_blank"
+                    href={selectedCompany.fi_web}
+                  >
+                    <p className="underline">Přejít na web</p>
+                  </a>
+                ) : (
+                  <p className='error-text'>Web není dostupný</p>
+                )}
+              </div>
+            ) : (
+              <p>Chyba načítání. Zkuste to později.</p>
             )}
           </div>
+
         </div>
       )}
 
@@ -126,7 +187,10 @@ function App() {
         desktopMap={selectedMapOption.desktopMap}
       />
 
-      <a href="https://businessday.utb.cz/" className="fixed bottom-10 bg-bdOrange text-white px-4 py-2 z-10">
+      <a
+        href="https://businessday.utb.cz/"
+        className="fixed bottom-10 bg-bdOrange text-white px-4 py-2 z-10"
+      >
         Zpátky na Business day
       </a>
     </div>

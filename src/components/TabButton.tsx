@@ -15,7 +15,7 @@ export const TabButton = ({ optionId, selectedOptionId, text, handleOnClick }: P
       }`}
       style={
         optionId === selectedOptionId
-          ? { borderRight: '2px solid white', borderLeft: '2px solid white' }
+          ? { borderRight: '5px solid white', borderLeft: '5px solid white' }
           : {}
       }
     >
