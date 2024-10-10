@@ -128,23 +128,28 @@ function App() {
             </button>
           </div>
           <div className="company-detail-content flex flex-col text-lg items-center justify-center text-center text-white">
-            {selectedCompany.fi_nazev && (
+            {selectedCompany ? (
               <div>
-
-                {selectedCompany.fi_logo && (
+                {selectedCompany.fi_logo ? (
                   <div className="flex justify-center mb-4 w-full">
                     <img
                       src={`https://businessdays.utb.cz/wp-content/uploads/logo2022/${selectedCompany.fi_logo}`}
-                      alt={`${selectedCompany.fi_nazev} logo`}
+                      alt={`${selectedCompany.fi_nazev ?? 'Company'} logo`}
                       className="max-h-[65px] max-w-[100px] w-auto object-contain"
+                      onError={(e) => {
+                        e.currentTarget.src = 'fallback-image.png'; // Fallback image if the logo fails to load
+                        e.currentTarget.alt = 'Logo not available';
+                      }}
                     />
-                  </div>                                                                         
+                  </div>
+                ) : (
+                  <p>Logo not loaded</p>
                 )}
 
-                <h2 className="company-name">{selectedCompany.fi_nazev}</h2>
-                <br/>
+                <h2 className="company-name">{selectedCompany.fi_nazev ?? 'Name Not Available'}</h2>
+                <br />
 
-                {selectedCompany.fi_id && (
+                {selectedCompany.fi_id ? (
                   <a
                     className="company-link"
                     target="_blank"
@@ -152,9 +157,11 @@ function App() {
                   >
                     <p><u>Detail</u></p>
                   </a>
+                ) : (
+                  <p>Details not available</p>
                 )}
-                
-                {selectedCompany.fi_web && (
+
+                {selectedCompany.fi_web ? (
                   <a
                     className="company-link"
                     target="_blank"
@@ -162,10 +169,15 @@ function App() {
                   >
                     <p><u>Přejít na web</u></p>
                   </a>
+                ) : (
+                  <p>Website not available</p>
                 )}
               </div>
+            ) : (
+              <p>Information could not be loaded. Please try again later.</p>
             )}
           </div>
+
         </div>
       )}
 
