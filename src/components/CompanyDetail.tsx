@@ -6,7 +6,7 @@ interface Props {
   handleSelectCompany: () => void;
 }
 
-export const CompanyDetail = ({selectedCompany, handleSelectCompany}: Props) => {
+export const CompanyDetail = ({ selectedCompany, handleSelectCompany }: Props) => {
   return (
     <div className="company-detail fixed z-10 bg-slate-200 w-80 h-40 p-4 top-1/4 rounded-lg">
       <div className="flex justify-end mb-2">
@@ -15,12 +15,11 @@ export const CompanyDetail = ({selectedCompany, handleSelectCompany}: Props) => 
         </button>
       </div>
       <div className="company-detail-content flex flex-col items-center">
-        <a className="company-link text-lg mb-4" href={selectedCompany.link}>
-          <h2 className="company-name">{selectedCompany.name}</h2>
+        <a className="company-link text-lg mb-4" href={selectedCompany.fi_web}>
+          <h2 className="company-name">{selectedCompany.fi_nazev}</h2>
         </a>
-        <p>{selectedCompany.description}</p>
+        <p>{selectedCompany.fi_popis}</p>
       </div>
     </div>
   );
 };
-

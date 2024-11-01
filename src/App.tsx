@@ -19,7 +19,7 @@ function App() {
   const modalRef = useRef<HTMLDivElement>(null); // Reference for the modal
 
   const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
-  const { data: companies, /*isLoading, err*/ } = useFetchCompanies();
+  const { data: companies /*isLoading, err*/ } = useFetchCompanies();
 
   const handleTableClick = (e: MouseEvent) => {
     const targetElement = e.target as HTMLElement;
@@ -143,7 +143,7 @@ function App() {
                     />
                   </div>
                 ) : (
-                  <p className='error-text'>Logo nenačteno</p>
+                  <p className="error-text">Logo nenačteno</p>
                 )}
 
                 <h2 className="company-name">{selectedCompany.fi_nazev ?? 'Název firmy nenačten'}</h2>
@@ -158,26 +158,21 @@ function App() {
                     <p className="underline">Detail</p>
                   </a>
                 ) : (
-                  <p className='error-text'>Detail není dostupný</p>
+                  <p className="error-text">Detail není dostupný</p>
                 )}
 
                 {selectedCompany.fi_web ? (
-                  <a
-                    className="company-link"
-                    target="_blank"
-                    href={selectedCompany.fi_web}
-                  >
+                  <a className="company-link" target="_blank" href={selectedCompany.fi_web}>
                     <p className="underline">Přejít na web</p>
                   </a>
                 ) : (
-                  <p className='error-text'>Web není dostupný</p>
+                  <p className="error-text">Web není dostupný</p>
                 )}
               </div>
             ) : (
               <p>Chyba načítání. Zkuste to později.</p>
             )}
           </div>
-
         </div>
       )}
 
@@ -187,10 +182,7 @@ function App() {
         desktopMap={selectedMapOption.desktopMap}
       />
 
-      <a
-        href="https://businessday.utb.cz/"
-        className="fixed bottom-10 bg-bdOrange text-white px-4 py-2 z-10"
-      >
+      <a href="https://businessday.utb.cz/" className="fixed bottom-10 bg-bdOrange text-white px-4 py-2 z-10">
         Zpátky na Business day
       </a>
     </div>
