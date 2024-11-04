@@ -20,7 +20,6 @@ export const useFetchCompanies = () => {
         }
 
         const data = await response.json();
-        console.log(data);
         setData(data);
         setErr(null);
       } catch (err) {

@@ -21,16 +21,15 @@ header button {
   z-index: 2;
 }
 
-.table-group {
+g[id^='K'],
+g[id^='R'] {
   cursor: pointer;
+  transition: 0.2s fill;
 }
 
-g > .table {
-  transition: .2s fill;
-}
-
-g:hover > .table {
-  fill: #E3A8A8;
+g[id^='K'],
+g[id^='R']:hover > p {
+  fill: #e3a8a8;
   cursor: pointer;
 }
 
@@ -43,6 +42,7 @@ g:hover > .table {
   width: 400px;
 }
 
-.company-link, .error-text {
+.company-link,
+.error-text {
   font-size: medium;
 }

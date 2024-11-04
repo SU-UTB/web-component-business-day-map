@@ -16,7 +16,7 @@ import { useFetchCompanies } from './lib/useFetchCompanies';
 
 function App() {
   const svgRef = useRef<SVGSVGElement>(null);
-  const modalRef = useRef<HTMLDivElement>(null); // Reference for the modal
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
   const { data: companies /*isLoading, err*/ } = useFetchCompanies();
@@ -36,11 +36,10 @@ function App() {
     setSelectedCompany(null);
   };
 
-  // Handle closing the modal when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        setSelectedCompany(null); // Close the modal if clicking outside
+        setSelectedCompany(null);
       }
     };
 
@@ -51,7 +50,7 @@ function App() {
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside); // Cleanup listener on unmount
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [selectedCompany]);
 
@@ -84,6 +83,8 @@ function App() {
   }, [isMobile]);
 
   useEffect(() => {
+    if (!companies) return;
+
     const timer = setTimeout(() => {
       if (svgRef?.current) {
         const svgElements = svgRef.current.querySelectorAll('g[id^="K"], g[id^="R"]');
@@ -95,7 +96,7 @@ function App() {
     }, 100);
 
     return () => clearTimeout(timer);
-  }, [selectedMapOption]);
+  }, [selectedMapOption, companies]);
 
   return (
     <div className="App relative">
