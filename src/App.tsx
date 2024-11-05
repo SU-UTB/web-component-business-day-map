@@ -121,14 +121,15 @@ function App() {
       {selectedCompany && (
         <div
           ref={modalRef} // Attach the ref to the modal
-          className="company-detail fixed z-10 bg-bdOrange w-80 max-h-[80vh] p-4 top-1/3 rounded-lg overflow-y-auto"
+          className="company-detail fixed z-10 bg-white border-bdOrange border-solid border-4 shadow-xl w-full max-w-[calc(100%-32px)] md:max-w-[600px] max-h-[80vh] p-4 top-1/3 rounded-lg overflow-y-auto"
         >
-          <div className="flex justify-end mb-2">
+          <div className="flex justify-between">
+            <div className="p-2 rounded-lg bg-[#FBED62] text-black font-bold">{selectedCompany.fi_place}</div>
             <button onClick={() => setSelectedCompany(null)}>
               <img src={closeBtnImg} alt="close" />
             </button>
           </div>
-          <div className="company-detail-content flex flex-col text-lg items-center justify-center text-center text-white">
+          <div className="company-detail-content flex flex-col text-lg items-center justify-center text-center text-black">
             {selectedCompany ? (
               <div>
                 {selectedCompany.fi_logo ? (
@@ -147,7 +148,7 @@ function App() {
                   <p className="error-text">Logo nenačteno</p>
                 )}
 
-                <h2 className="company-name">{selectedCompany.fi_nazev ?? 'Název firmy nenačten'}</h2>
+                <h2 className="text-xl font-medium">{selectedCompany.fi_nazev ?? 'Název firmy nenačten'}</h2>
                 <br />
 
                 {selectedCompany.fi_id ? (
@@ -156,7 +157,7 @@ function App() {
                     target="_blank"
                     href={`https://businessdays.utb.cz/firma-detail/?id=${selectedCompany.fi_id}`}
                   >
-                    <p className="underline">Detail</p>
+                    <p className="underline">Více informací</p>
                   </a>
                 ) : (
                   <p className="error-text">Detail není dostupný</p>
@@ -164,7 +165,7 @@ function App() {
 
                 {selectedCompany.fi_web ? (
                   <a className="company-link" target="_blank" href={selectedCompany.fi_web}>
-                    <p className="underline">Přejít na web</p>
+                    <p className="underline">Přejít na web firmy</p>
                   </a>
                 ) : (
                   <p className="error-text">Web není dostupný</p>
